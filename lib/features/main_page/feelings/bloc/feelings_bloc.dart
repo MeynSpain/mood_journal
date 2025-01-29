@@ -16,9 +16,10 @@ part 'feelings_state.dart';
 class FeelingsBloc extends Bloc<FeelingsEvent, FeelingsState> {
   FeelingsBloc() : super(FeelingsState.initial()) {
     on<FeelingsInitialEvent>(_initial);
+    on<FeelingsSelectFeelingEvent>(_selectFeeling);
   }
 
-  Future<void> _initial(
+  FutureOr<void> _initial(
       FeelingsInitialEvent event, Emitter<FeelingsState> emit) async {
     emit(state.copyWith(
       status: FeelingsStatus.loading,
@@ -31,6 +32,28 @@ class FeelingsBloc extends Bloc<FeelingsEvent, FeelingsState> {
       emit(state.copyWith(
         status: FeelingsStatus.success,
         listFeelings: listFeelings,
+      ));
+
+    } catch (e, st) {
+      getIt<Talker>().handle(e, st);
+      emit(state.copyWith(
+        status: FeelingsStatus.error,
+      ));
+    }
+  }
+
+
+  FutureOr<void> _selectFeeling(
+      FeelingsSelectFeelingEvent event, Emitter<FeelingsState> emit) async {
+    emit(state.copyWith(
+      status: FeelingsStatus.selecting,
+    ));
+
+    try {
+
+      emit(state.copyWith(
+        status: FeelingsStatus.success,
+        currentFeeling: event.feeling,
       ));
 
     } catch (e, st) {

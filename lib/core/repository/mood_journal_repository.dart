@@ -40,7 +40,6 @@ class MoodJournalRepository {
       await feel.save();
     }
   }
-
    */
 
   /// Вставка начальных данных в бд

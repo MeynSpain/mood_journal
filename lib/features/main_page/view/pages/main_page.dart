@@ -40,33 +40,37 @@ class _MainPageState extends State<MainPage> {
           IconButton(onPressed: () {}, icon: Icon(Icons.date_range_rounded)),
         ],
       ),
-      body: Column(
-        // mainAxisAlignment: MainAxisAlignment.center,
-        // crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          //Переключатель
-          ToggleButtons(
-            children: [
-              Text('Дневник настроения'),
-              Text('Статистика'),
-            ],
-            isSelected: [true, false],
-            fillColor: theme.primaryColor,
-            onPressed: (int index) {},
-            borderRadius: BorderRadius.circular(47),
-          ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            //Переключатель
+            ToggleButtons(
+              children: [
+                Text('Дневник настроения'),
+                Text('Статистика'),
+              ],
+              isSelected: [true, false],
+              fillColor: theme.primaryColor,
+              onPressed: (int index) {},
+              borderRadius: BorderRadius.circular(47),
+            ),
 
-          // Чувства
-          Text('Что чувствуешь?'),
-          Expanded(child: FeelingsWidget()),
+            // Чувства
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Что чувствуешь?', style: theme.textTheme.bodyLarge,),
+            ),
+            FeelingsWidget(),
 
-          // Теги
+            // Теги
 
-          Expanded(child: Text('Тэги')),
+            Text('Тэги'),
 
-          // Уровень стресса
-          Expanded(
-            child: Column(
+            // Уровень стресса
+            Column(
               children: [
                 Text('Уровень стресса'),
                 Text('Тут должны быть метки'),
@@ -111,11 +115,9 @@ class _MainPageState extends State<MainPage> {
                 ),
               ],
             ),
-          ),
 
-          // Самооценка
-          Expanded(
-            child: Column(
+            // Самооценка
+            Column(
               children: [
                 Text('Самооценка'),
                 Text('Тут должны быть метки'),
@@ -160,22 +162,19 @@ class _MainPageState extends State<MainPage> {
                 ),
               ],
             ),
-          ),
 
-          // Заметки
-          Expanded(
-            child: Container(
+            // Заметки
+            Container(
               decoration: BoxDecoration(
                 color: Colors.red,
               ),
               child: Text('Здесь будет заметка'),
             ),
-          ),
 
-          // Кнопка сохранить
-          Expanded(
-              child: ElevatedButton(onPressed: () {}, child: Text('Сохранить')))
-        ],
+            // Кнопка сохранить
+            ElevatedButton(onPressed: () {}, child: Text('Сохранить'))
+          ],
+        ),
       ),
     );
   }
