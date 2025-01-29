@@ -27,30 +27,36 @@ class FeelingsWidget extends StatelessWidget {
                 final feeling = state.listFeelings[index];
                 return GestureDetector(
                   child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 6),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: index == 0 ? 0 : 6),
                     // width: 83,
                     // height: 118,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(76),
                       border: Border.all(
-                        width: 2,
-                        color:  state.currentFeeling?.id == index + 1
-                            ? theme.primaryColor
-                            : Colors.white
-                      ),
+                          width: 2,
+                          color: state.currentFeeling?.id == index + 1
+                              ? theme.primaryColor
+                              : Colors.white),
                     ),
                     child: Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(left: 15, top: 23, right: 15,),
+                          padding: EdgeInsets.only(
+                            left: 15,
+                            top: 23,
+                            right: 15,
+                          ),
                           child: Image.asset(
                             feeling.path ?? 'assets/images/moods/sad.svg',
                             width: 53,
                             height: 50,
-
                           ),
                         ),
-                        Text(feeling.name ?? 'Название потерялось', style: theme.textTheme.bodySmall,),
+                        Text(
+                          feeling.name ?? 'Название потерялось',
+                          style: theme.textTheme.bodySmall,
+                        ),
                       ],
                     ),
                   ),

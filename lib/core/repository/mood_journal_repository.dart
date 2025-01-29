@@ -1,10 +1,10 @@
 import 'package:mood_journal/core/injection.dart';
 import 'package:mood_journal/core/model/feeling/feeling_model.dart';
 import 'package:mood_journal/core/model/model_mood_journal.dart';
+import 'package:mood_journal/core/model/tags/tag_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class MoodJournalRepository {
-
   /// Получение списка чувств из базы данных
   Future<List<FeelingModel>> getFeelings() async {
     List<FeelingModel> listFeelings = [];
@@ -24,6 +24,31 @@ class MoodJournalRepository {
           .info('Произошла ошибка при попытки получить список чувств из бд!');
       return [];
     }
+  }
+
+  Future<List<TagModel>> getAllTags() async {
+    try {
+      List<Tags> tags = await Tags().select().toList();
+
+      List<TagModel> listTagModel = [];
+      for (var tag in tags) {
+        listTagModel.add(TagModel.fromDB(tag: tag));
+      }
+
+      return listTagModel;
+    } catch (e, st) {
+      getIt<Talker>().handle(e, st);
+
+      getIt<Talker>()
+          .info('Произошла ошибка при попытки получить список тегов из бд!');
+      return [];
+    }
+  }
+
+  Future<void> addTag(TagModel tagModel) async {
+    Tags tag = Tags();
+    tag.name = tagModel.name;
+    await tag.save();
   }
 
   /*  Svg ни в какую не отображлись пришлось заменить на Png, причем через replace я заменил не то

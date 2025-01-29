@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mood_journal/core/injection.dart';
 import 'package:mood_journal/core/services/date_service.dart';
+import 'package:mood_journal/features/main_page/feelings/bloc/feelings_bloc.dart';
 import 'package:mood_journal/features/main_page/feelings/view/widgets/feelings_widget.dart';
+import 'package:mood_journal/features/main_page/tags/view/widgets/tags_widget.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -24,7 +28,8 @@ class _MainPageState extends State<MainPage> {
     dateTime = DateTime.now();
 
     dateString =
-        '${dateTime.day} ${dateService.getStringMonth(dateTime.month)} ${dateTime.hour}:${dateTime.minute}';
+    '${dateTime.day} ${dateService.getStringMonth(dateTime.month)} ${dateTime
+        .hour}:${dateTime.minute}';
 
     super.initState();
   }
@@ -42,138 +47,156 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            //Переключатель
-            ToggleButtons(
-              children: [
-                Text('Дневник настроения'),
-                Text('Статистика'),
-              ],
-              isSelected: [true, false],
-              fillColor: theme.primaryColor,
-              onPressed: (int index) {},
-              borderRadius: BorderRadius.circular(47),
-            ),
-
-            // Чувства
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Что чувствуешь?', style: theme.textTheme.bodyLarge,),
-            ),
-            FeelingsWidget(),
-
-            // Теги
-
-            Text('Тэги'),
-
-            // Уровень стресса
-            Column(
-              children: [
-                Text('Уровень стресса'),
-                Text('Тут должны быть метки'),
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: theme.primaryColor,
-                    activeTickMarkColor: theme.primaryColor,
-                    inactiveTrackColor: theme.primaryColor.withAlpha(10),
-                    inactiveTickMarkColor: theme.primaryColor.withAlpha(10),
-                    trackHeight: 10,
-                    thumbColor: theme.primaryColor,
-                    overlayColor: theme.primaryColor.withAlpha(100),
-                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
-                    overlayShape: RoundSliderOverlayShape(overlayRadius: 20.0),
-                    tickMarkShape: RoundSliderTickMarkShape(),
-                    valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-                    valueIndicatorColor: theme.primaryColor,
-                    valueIndicatorTextStyle: TextStyle(color: Colors.white),
-                    trackShape: RoundedRectSliderTrackShape(),
-                  ),
-                  child: Slider(
-                    value: _stressLevel,
-                    min: 0,
-                    max: 10,
-                    divisions: 10,
-                    label: _stressLevel.toString(),
-                    onChanged: (value) {
-                      setState(
-                        () {
-                          _stressLevel = value;
-                        },
-                      );
-                    },
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Низкий', style: TextStyle(fontSize: 16)),
-                    Text('Высокий', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-              ],
-            ),
-
-            // Самооценка
-            Column(
-              children: [
-                Text('Самооценка'),
-                Text('Тут должны быть метки'),
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: theme.primaryColor,
-                    activeTickMarkColor: theme.primaryColor,
-                    inactiveTrackColor: theme.primaryColor.withAlpha(10),
-                    inactiveTickMarkColor: theme.primaryColor.withAlpha(10),
-                    trackHeight: 10,
-                    thumbColor: theme.primaryColor,
-                    overlayColor: theme.primaryColor.withAlpha(100),
-                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
-                    overlayShape: RoundSliderOverlayShape(overlayRadius: 20.0),
-                    tickMarkShape: RoundSliderTickMarkShape(),
-                    valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-                    valueIndicatorColor: theme.primaryColor,
-                    valueIndicatorTextStyle: TextStyle(color: Colors.white),
-                    trackShape: RoundedRectSliderTrackShape(),
-                  ),
-                  child: Slider(
-                    value: _stressLevel,
-                    min: 0,
-                    max: 10,
-                    divisions: 10,
-                    label: _stressLevel.toString(),
-                    onChanged: (value) {
-                      setState(
-                        () {
-                          _stressLevel = value;
-                        },
-                      );
-                    },
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Неуверенность', style: TextStyle(fontSize: 16)),
-                    Text('Уверенность', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-              ],
-            ),
-
-            // Заметки
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.red,
+        child: SingleChildScrollView(
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              //Переключатель
+              ToggleButtons(
+                children: [
+                  Text('Дневник настроения'),
+                  Text('Статистика'),
+                ],
+                isSelected: [true, false],
+                fillColor: theme.primaryColor,
+                onPressed: (int index) {},
+                borderRadius: BorderRadius.circular(47),
               ),
-              child: Text('Здесь будет заметка'),
-            ),
 
-            // Кнопка сохранить
-            ElevatedButton(onPressed: () {}, child: Text('Сохранить'))
-          ],
+              // Чувства
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Что чувствуешь?',
+                  style: theme.textTheme.bodyLarge,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              FeelingsWidget(),
+
+              // Теги
+              BlocBuilder<FeelingsBloc, FeelingsState>(
+                  builder: (context, state) {
+                    return state.currentFeeling != null
+                        ? TagsWidget()
+                        : SizedBox(
+                      height: 0,
+                    );
+                  }),
+
+              // Уровень стресса
+              Column(
+                children: [
+                  Text('Уровень стресса'),
+                  Text('Тут должны быть метки'),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: theme.primaryColor,
+                      activeTickMarkColor: theme.primaryColor,
+                      inactiveTrackColor: theme.primaryColor.withAlpha(10),
+                      inactiveTickMarkColor: theme.primaryColor.withAlpha(10),
+                      trackHeight: 10,
+                      thumbColor: theme.primaryColor,
+                      overlayColor: theme.primaryColor.withAlpha(100),
+                      thumbShape:
+                      RoundSliderThumbShape(enabledThumbRadius: 12.0),
+                      overlayShape:
+                      RoundSliderOverlayShape(overlayRadius: 20.0),
+                      tickMarkShape: RoundSliderTickMarkShape(),
+                      valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+                      valueIndicatorColor: theme.primaryColor,
+                      valueIndicatorTextStyle: TextStyle(color: Colors.white),
+                      trackShape: RoundedRectSliderTrackShape(),
+                    ),
+                    child: Slider(
+                      value: _stressLevel,
+                      min: 0,
+                      max: 10,
+                      divisions: 10,
+                      label: _stressLevel.toString(),
+                      onChanged: (value) {
+                        setState(
+                              () {
+                            _stressLevel = value;
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Низкий', style: TextStyle(fontSize: 16)),
+                      Text('Высокий', style: TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                ],
+              ),
+
+              // Самооценка
+              Column(
+                children: [
+                  Text('Самооценка'),
+                  Text('Тут должны быть метки'),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: theme.primaryColor,
+                      activeTickMarkColor: theme.primaryColor,
+                      inactiveTrackColor: theme.primaryColor.withAlpha(10),
+                      inactiveTickMarkColor: theme.primaryColor.withAlpha(10),
+                      trackHeight: 10,
+                      thumbColor: theme.primaryColor,
+                      overlayColor: theme.primaryColor.withAlpha(100),
+                      thumbShape:
+                      RoundSliderThumbShape(enabledThumbRadius: 12.0),
+                      overlayShape:
+                      RoundSliderOverlayShape(overlayRadius: 20.0),
+                      tickMarkShape: RoundSliderTickMarkShape(),
+                      valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+                      valueIndicatorColor: theme.primaryColor,
+                      valueIndicatorTextStyle: TextStyle(color: Colors.white),
+                      trackShape: RoundedRectSliderTrackShape(),
+                    ),
+                    child: Slider(
+                      value: _stressLevel,
+                      min: 0,
+                      max: 10,
+                      divisions: 10,
+                      label: _stressLevel.toString(),
+                      onChanged: (value) {
+                        setState(
+                              () {
+                            _stressLevel = value;
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Неуверенность', style: TextStyle(fontSize: 16)),
+                      Text('Уверенность', style: TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                ],
+              ),
+
+              // Заметки
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                ),
+                child: Text('Здесь будет заметка'),
+              ),
+
+              // Кнопка сохранить
+              ElevatedButton(onPressed: () {}, child: Text('Сохранить'))
+            ],
+          ),
         ),
       ),
     );
