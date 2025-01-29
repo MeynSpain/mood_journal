@@ -17,7 +17,9 @@ const tableFeelings = SqfEntityTable(
     fields: [
       SqfEntityField('name', DbType.text),
       SqfEntityField('filePath', DbType.text),
-    ]);
+    ],
+
+);
 
 const tableTags = SqfEntityTable(
     modelName: 'tags',

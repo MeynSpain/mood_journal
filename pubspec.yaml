@@ -38,9 +38,11 @@ dependencies:
   equatable: ^2.0.7
   get_it: ^8.0.3
   talker_flutter: ^4.6.7
+  talker_bloc_logger: ^4.1.5
   flutter_svg: ^2.0.17
   sqfentity: ^2.5.0
   sqfentity_gen: ^2.5.0
+  shared_preferences: ^2.4.0
 
 dev_dependencies:
   flutter_test:
