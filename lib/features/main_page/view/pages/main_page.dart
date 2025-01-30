@@ -7,6 +7,7 @@ import 'package:mood_journal/features/main_page/feelings/bloc/feelings_bloc.dart
 import 'package:mood_journal/features/main_page/feelings/view/widgets/feelings_widget.dart';
 import 'package:mood_journal/features/main_page/tags/view/widgets/tags_widget.dart';
 import 'package:mood_journal/features/main_page/view/widgets/custom_slider.dart';
+import 'package:mood_journal/features/main_page/view/widgets/notes_text_field.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -17,6 +18,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final DateService dateService = DateService();
+  final TextEditingController _notesController = TextEditingController();
 
   double _stressLevel = 0;
   double _selfAssessment = 0;
@@ -33,6 +35,12 @@ class _MainPageState extends State<MainPage> {
         '${dateTime.day} ${dateService.getStringMonth(dateTime.month)} ${dateTime.hour}:${dateTime.minute}';
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    super.dispose();
   }
 
   @override
@@ -152,16 +160,41 @@ class _MainPageState extends State<MainPage> {
               SizedBox(
                 height: 36,
               ),
+
               // Заметки
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                ),
-                child: Text('Здесь будет заметка'),
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Заметки',
+                    style: theme.textTheme.bodyLarge,
+                  )),
+              SizedBox(
+                height: 20,
+              ),
+              NotesTextField(
+                controller: _notesController,
               ),
 
               // Кнопка сохранить
-              ElevatedButton(onPressed: () {}, child: Text('Сохранить'))
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    backgroundColor: theme.primaryColor,
+                    minimumSize: Size(double.infinity, 44)),
+                onPressed: () {
+
+                },
+                child: Text(
+                  'Сохранить',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontSize: 20,
+                    color: Color(0xFFFFFFFF),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 12,
+              ),
             ],
           ),
         ),
