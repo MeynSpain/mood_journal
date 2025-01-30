@@ -10,7 +10,7 @@ enum TagsStatus {
   togglingTag,
   tagToggled,
 
-  // success,
+  success,
 
   error,
 }

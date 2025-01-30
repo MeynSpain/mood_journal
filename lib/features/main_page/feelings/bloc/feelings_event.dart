@@ -10,3 +10,5 @@ class FeelingsSelectFeelingEvent extends FeelingsEvent {
 
   FeelingsSelectFeelingEvent({required this.feeling});
 }
+
+class FeelingsClearCurrentEvent extends FeelingsEvent {}

@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mood_journal/core/constants/prefs_names.dart';
 import 'package:mood_journal/core/repository/mood_journal_repository.dart';
 import 'package:mood_journal/features/main_page/feelings/bloc/feelings_bloc.dart';
+import 'package:mood_journal/features/main_page/save_data_bloc/save_data_bloc.dart';
 import 'package:mood_journal/features/main_page/tags/bloc/tags_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger.dart';
@@ -43,11 +44,14 @@ Future<void> init() async {
   }
   // await moodJournalRepository.update();
 
+  // FeelingsBloc
   getIt.registerLazySingleton(() => FeelingsBloc());
-
   getIt<FeelingsBloc>().add(FeelingsInitialEvent());
 
+  // TagsBloc
   getIt.registerLazySingleton(() => TagsBloc());
   getIt<TagsBloc>().add(TagsGetAllTagsEvent());
 
+  // SaveDataBloc
+  getIt.registerLazySingleton(() => SaveDataBloc());
 }

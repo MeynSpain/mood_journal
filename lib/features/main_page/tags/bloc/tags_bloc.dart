@@ -18,6 +18,7 @@ class TagsBloc extends Bloc<TagsEvent, TagsState> {
     on<TagsGetAllTagsEvent>(_getAllTags);
     on<TagsToggleTagEvent>(_toggleTag);
     on<TagsAddTagEvent>(_addTag);
+    on<TagsClearSelectedTagsEvent>(_clearSelectedTags);
   }
 
   Future<void> _getAllTags(
@@ -42,8 +43,7 @@ class TagsBloc extends Bloc<TagsEvent, TagsState> {
     }
   }
 
-  Future<void> _toggleTag(
-      TagsToggleTagEvent event, Emitter<TagsState> emit) async {
+  void _toggleTag(TagsToggleTagEvent event, Emitter<TagsState> emit) {
     emit(state.copyWith(
       status: TagsStatus.togglingTag,
     ));
@@ -77,6 +77,28 @@ class TagsBloc extends Bloc<TagsEvent, TagsState> {
         status: TagsStatus.tagAdded,
         listTags: [...state.listTags, event.tagModel],
         listSelectedTags: [...state.listSelectedTags, true],
+      ));
+    } catch (e, st) {
+      getIt<Talker>().handle(e, st);
+
+      emit(state.copyWith(
+        status: TagsStatus.error,
+      ));
+    }
+  }
+
+  void _clearSelectedTags(
+      TagsClearSelectedTagsEvent event, Emitter<TagsState> emit) async {
+
+    try {
+      List<bool> selectedTags = List.generate(state.listSelectedTags.length, (index) {
+        return false;
+      });
+      print(selectedTags);
+
+      emit(state.copyWith(
+        status: TagsStatus.success,
+        listSelectedTags: selectedTags,
       ));
     } catch (e, st) {
       getIt<Talker>().handle(e, st);

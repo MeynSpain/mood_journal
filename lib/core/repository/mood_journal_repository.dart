@@ -51,7 +51,36 @@ class MoodJournalRepository {
     await tag.save();
   }
 
-  /*  Svg ни в какую не отображлись пришлось заменить на Png, причем через replace я заменил не то
+  Future<void> saveDataToJournal(
+      {required FeelingModel feeling,
+      required List<TagModel> tags,
+      required double stressLevel,
+      required double selfAssessment,
+      required String note,
+      required DateTime dateTime,
+      }) async {
+    try {
+      Journal journalRecord = Journal();
+
+      String tagsString = tags.join(';');
+
+      journalRecord.id_feeling = feeling.id;
+      journalRecord.idTags = tagsString;
+      journalRecord.stressLevel = stressLevel.toInt();
+      journalRecord.selfAssessment = selfAssessment.toInt();
+      journalRecord.date = dateTime;
+      journalRecord.note = note;
+
+      journalRecord.save();
+    } catch (e, st) {
+     getIt<Talker>().handle(e, st);
+     getIt<Talker>().error('Не получилось сохранить запись в базу данных');
+
+    }
+
+  }
+
+/*  Svg ни в какую не отображлись пришлось заменить на Png, причем через replace я заменил не то
   Future<void> update() async {
     List<Feelings> feelings = await Feelings().select().toList();
     feelings[0].filePath = 'assets/images/moods/happy.png';

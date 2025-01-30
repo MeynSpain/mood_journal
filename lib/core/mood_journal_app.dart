@@ -4,6 +4,7 @@ import 'package:mood_journal/core/routes/routes.dart';
 import 'package:mood_journal/core/theme/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mood_journal/features/main_page/feelings/bloc/feelings_bloc.dart';
+import 'package:mood_journal/features/main_page/save_data_bloc/save_data_bloc.dart';
 import 'package:mood_journal/features/main_page/tags/bloc/tags_bloc.dart';
 
 class MoodJournalApp extends StatelessWidget {
@@ -15,6 +16,7 @@ class MoodJournalApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => getIt<FeelingsBloc>()),
         BlocProvider(create: (context) => getIt<TagsBloc>()),
+        BlocProvider(create: (context) => getIt<SaveDataBloc>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

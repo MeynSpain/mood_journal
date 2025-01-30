@@ -16,3 +16,6 @@ class TagsToggleTagEvent extends TagsEvent {
 
   TagsToggleTagEvent({required this.index});
 }
+
+class TagsClearSelectedTagsEvent extends TagsEvent {}
+

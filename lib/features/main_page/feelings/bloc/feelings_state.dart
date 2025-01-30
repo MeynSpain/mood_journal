@@ -27,7 +27,7 @@ class FeelingsState extends Equatable {
     return FeelingsState._(
       status: status ?? this.status,
       listFeelings: listFeelings ?? this.listFeelings,
-      currentFeeling: currentFeeling ?? this.currentFeeling,
+      currentFeeling: currentFeeling,
     );
   }
 
