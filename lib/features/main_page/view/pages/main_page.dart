@@ -12,6 +12,8 @@ import 'package:mood_journal/features/main_page/feelings/view/widgets/feelings_w
 import 'package:mood_journal/features/main_page/save_data_bloc/save_data_bloc.dart';
 import 'package:mood_journal/features/main_page/tags/bloc/tags_bloc.dart';
 import 'package:mood_journal/features/main_page/tags/view/widgets/tags_widget.dart';
+import 'package:mood_journal/features/main_page/view/pages/journal_page.dart';
+import 'package:mood_journal/features/main_page/view/pages/stats_page.dart';
 import 'package:mood_journal/features/main_page/view/widgets/custom_slider.dart';
 import 'package:mood_journal/features/main_page/view/widgets/notes_text_field.dart';
 
@@ -23,17 +25,34 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final DateService dateService = DateService();
-  final TextEditingController _notesController = TextEditingController();
+  final PageController _pageController = PageController();
+  int _selectedPageIndex = 0;
 
-  double _stressLevel = Const.defaultStressLevel;
-  double _selfAssessment = Const.defaultSelfAssessment;
+  void _onPageChanged(int index) {
+    setState(() {
+      _selectedPageIndex = index;
+    });
+  }
+
+  void _openPage(int index) {
+    setState(() {
+      _selectedPageIndex = index;
+    });
+
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
+  }
+
+  final DateService dateService = DateService();
 
   late DateTime dateTime;
 
   String dateString = '';
 
-  int selectedIndex = 0;
+  // int selectedIndex = 0;
 
   double correctOffset = 28;
 
@@ -49,7 +68,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void dispose() {
-    _notesController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -72,217 +91,36 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Stack(
-                alignment: Alignment.center,
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                _buildBackground(), // Фон переключателя
+                _buildToggleButton(0, 'Дневник настроения', Const.journal,
+                    theme.primaryColor, (-86 - 1) + correctOffset),
+                _buildToggleButton(1, 'Статистика', Const.stats,
+                    theme.primaryColor, (58 + 1) + correctOffset),
+              ],
+            ),
+            Expanded(
+              child: PageView(
+                onPageChanged: _onPageChanged,
+                controller: _pageController,
                 children: [
-                  _buildBackground(), // Фон переключателя
-                  _buildToggleButton(0, 'Дневник настроения', Const.journal,
-                      theme.primaryColor, (-86 - 1) + correctOffset),
-                  _buildToggleButton(1, 'Статистика', Const.stats,
-                      theme.primaryColor, (58 + 1) + correctOffset),
+                  JournalPage(
+                    dateTime: dateTime,
+                  ),
+                  StatsPage(),
                 ],
               ),
-
-              SizedBox(
-                height: 30,
-              ),
-
-              // Чувства
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Что чувствуешь?',
-                  style: theme.textTheme.bodyLarge,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              FeelingsWidget(),
-
-              SizedBox(
-                height: 20,
-              ),
-
-              // Теги
-              BlocBuilder<FeelingsBloc, FeelingsState>(
-                  builder: (context, state) {
-                return state.currentFeeling != null
-                    ? TagsWidget()
-                    : SizedBox(
-                        height: 0,
-                      );
-              }),
-
-              SizedBox(
-                height: 36,
-              ),
-
-              // Уровень стресса
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Уровень стресса',
-                    style: theme.textTheme.bodyLarge,
-                  )),
-              SizedBox(
-                height: 20,
-              ),
-              CustomSlider(
-                value: _stressLevel,
-                min: 0,
-                max: 10,
-                divisions: 10,
-                minTitle: 'Низкий',
-                maxTitle: 'Высокий',
-                onChanged: (value) {
-                  setState(() {
-                    _stressLevel = value;
-                  });
-                },
-              ),
-
-              SizedBox(
-                height: 36,
-              ),
-              // Самооценка
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Самооценка',
-                    style: theme.textTheme.bodyLarge,
-                  )),
-              SizedBox(
-                height: 20,
-              ),
-              CustomSlider(
-                value: _selfAssessment,
-                min: 0,
-                max: 10,
-                divisions: 10,
-                minTitle: 'Неуверенность',
-                maxTitle: 'Увереннность',
-                onChanged: (newValue) {
-                  setState(() {
-                    _selfAssessment = newValue;
-                  });
-                },
-              ),
-
-              SizedBox(
-                height: 36,
-              ),
-
-              // Заметки
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Заметки',
-                    style: theme.textTheme.bodyLarge,
-                  )),
-              SizedBox(
-                height: 20,
-              ),
-              NotesTextField(
-                controller: _notesController,
-              ),
-
-              // Кнопка сохранить
-
-              BlocListener<SaveDataBloc, SaveDataState>(
-                listener: (context, state) {
-                  if (state.status == SaveDataStatus.success) {
-                    // Очистить экран.
-                    _clearScreen();
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Успешно'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  } else if (state.status == SaveDataStatus.error) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Произошла ошибка'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
-                },
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 15),
-                      backgroundColor: theme.primaryColor,
-                      minimumSize: Size(double.infinity, 44)),
-                  onPressed: _saveData,
-                  child: Text(
-                    'Сохранить',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 20,
-                      color: Color(0xFFFFFFFF),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 12,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  void _clearScreen() {
-    getIt<FeelingsBloc>().add(FeelingsClearCurrentEvent());
-    getIt<TagsBloc>().add(TagsClearSelectedTagsEvent());
-
-    setState(() {
-      _stressLevel = Const.defaultStressLevel;
-      _selfAssessment = Const.defaultSelfAssessment;
-
-      _notesController.text = '';
-    });
-  }
-
-  void _saveData() {
-    FeelingModel? feeling = getIt<FeelingsBloc>().state.currentFeeling;
-    String note = _notesController.text.trim();
-    List<TagModel> allTags = getIt<TagsBloc>().state.listTags;
-    List<bool> selectedTags = getIt<TagsBloc>().state.listSelectedTags;
-
-    List<TagModel> tags = [];
-
-    for (int i = 0; i < selectedTags.length; i++) {
-      if (selectedTags[i]) {
-        tags.add(allTags[i]);
-      }
-    }
-
-    if (feeling != null && note != '') {
-      getIt<SaveDataBloc>().add(SaveDataInDatabaseEvent(
-        feeling: feeling,
-        tags: tags,
-        stressLevel: _stressLevel,
-        selfAssessment: _selfAssessment,
-        note: note,
-        dateTime: dateTime,
-      ));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Не все поля были заполнены'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
   }
 
   Widget _buildBackground() {
@@ -299,14 +137,15 @@ class _MainPageState extends State<MainPage> {
 
   Widget _buildToggleButton(int index, String text, String imagePath,
       Color activeColor, double offset) {
-    bool isSelected = selectedIndex == index;
+    bool isSelected = _selectedPageIndex == index;
     final theme = Theme.of(context);
     return Transform.translate(
       offset: Offset(offset, 0), // Смещение кнопок для перекрытия
       child: GestureDetector(
         onTap: () {
           setState(() {
-            selectedIndex = index;
+            _selectedPageIndex = index;
+            _openPage(index);
           });
         },
         child: Container(
