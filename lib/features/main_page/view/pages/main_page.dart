@@ -33,6 +33,10 @@ class _MainPageState extends State<MainPage> {
 
   String dateString = '';
 
+  int selectedIndex = 0;
+
+  double correctOffset = 28;
+
   @override
   void initState() {
     dateTime = DateTime.now();
@@ -73,16 +77,19 @@ class _MainPageState extends State<MainPage> {
             // mainAxisAlignment: MainAxisAlignment.center,
             // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              //Переключатель
-              ToggleButtons(
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  Text('Дневник настроения'),
-                  Text('Статистика'),
+                  _buildBackground(), // Фон переключателя
+                  _buildToggleButton(0, 'Дневник настроения', Const.journal,
+                      theme.primaryColor, (-86 - 1) + correctOffset),
+                  _buildToggleButton(1, 'Статистика', Const.stats,
+                      theme.primaryColor, (58 + 1) + correctOffset),
                 ],
-                isSelected: [true, false],
-                fillColor: theme.primaryColor,
-                onPressed: (int index) {},
-                borderRadius: BorderRadius.circular(47),
+              ),
+
+              SizedBox(
+                height: 30,
               ),
 
               // Чувства
@@ -276,5 +283,57 @@ class _MainPageState extends State<MainPage> {
         ),
       );
     }
+  }
+
+  Widget _buildBackground() {
+    return Container(
+      height: 30 + 8,
+      width: 290,
+      // padding: EdgeInsets.symmetric(horizontal: 17),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(47),
+        color: Colors.grey.shade200,
+      ),
+    );
+  }
+
+  Widget _buildToggleButton(int index, String text, String imagePath,
+      Color activeColor, double offset) {
+    bool isSelected = selectedIndex == index;
+    final theme = Theme.of(context);
+    return Transform.translate(
+      offset: Offset(offset, 0), // Смещение кнопок для перекрытия
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 9, horizontal: 17),
+          decoration: BoxDecoration(
+            color: isSelected ? activeColor : Colors.transparent,
+            borderRadius: BorderRadius.circular(47),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min, // Кнопки подстраиваются под контент
+            children: [
+              Image.asset(
+                imagePath,
+                color: isSelected ? Colors.white : Colors.grey,
+              ),
+              SizedBox(width: 8),
+              Text(
+                text,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: isSelected ? Colors.white : Color(0xFFBCBCBF)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
