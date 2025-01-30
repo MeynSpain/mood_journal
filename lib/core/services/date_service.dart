@@ -2,40 +2,40 @@ class DateService {
   String getStringMonth(int month) {
     switch (month) {
       case 1:
-        return 'Январь';
+        return 'Января';
         break;
       case 2:
-        return 'Февраль';
+        return 'Февраля';
         break;
       case 3:
-        return 'Март';
+        return 'Марта';
         break;
       case 4:
-        return 'Апрель';
+        return 'Апреля';
         break;
       case 5:
-        return 'Май';
+        return 'Мая';
         break;
       case 6:
-        return 'Июнь';
+        return 'Июня';
         break;
       case 7:
-        return 'Июль';
+        return 'Июля';
         break;
       case 8:
-        return 'Август';
+        return 'Августа';
         break;
       case 9:
-        return 'Сентябрь';
+        return 'Сентября';
         break;
       case 10:
-        return 'Октябрь';
+        return 'Октября';
         break;
       case 11:
-        return 'Ноябрь';
+        return 'Ноября';
         break;
       case 12:
-        return 'Декабрь';
+        return 'Декабря';
         break;
       default:
         return '';

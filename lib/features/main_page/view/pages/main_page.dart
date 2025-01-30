@@ -6,6 +6,7 @@ import 'package:mood_journal/core/services/date_service.dart';
 import 'package:mood_journal/features/main_page/feelings/bloc/feelings_bloc.dart';
 import 'package:mood_journal/features/main_page/feelings/view/widgets/feelings_widget.dart';
 import 'package:mood_journal/features/main_page/tags/view/widgets/tags_widget.dart';
+import 'package:mood_journal/features/main_page/view/widgets/custom_slider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -18,6 +19,7 @@ class _MainPageState extends State<MainPage> {
   final DateService dateService = DateService();
 
   double _stressLevel = 0;
+  double _selfAssessment = 0;
 
   late DateTime dateTime;
 
@@ -28,8 +30,7 @@ class _MainPageState extends State<MainPage> {
     dateTime = DateTime.now();
 
     dateString =
-    '${dateTime.day} ${dateService.getStringMonth(dateTime.month)} ${dateTime
-        .hour}:${dateTime.minute}';
+        '${dateTime.day} ${dateService.getStringMonth(dateTime.month)} ${dateTime.hour}:${dateTime.minute}';
 
     super.initState();
   }
@@ -39,7 +40,13 @@ class _MainPageState extends State<MainPage> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(dateString),
+        title: Text(
+          dateString,
+          style: theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
+              color: Color(0xFFBCBCBF)),
+        ),
         centerTitle: true,
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.date_range_rounded)),
@@ -80,111 +87,71 @@ class _MainPageState extends State<MainPage> {
               // Теги
               BlocBuilder<FeelingsBloc, FeelingsState>(
                   builder: (context, state) {
-                    return state.currentFeeling != null
-                        ? TagsWidget()
-                        : SizedBox(
-                      height: 0,
-                    );
-                  }),
+                return state.currentFeeling != null
+                    ? TagsWidget()
+                    : SizedBox(
+                        height: 0,
+                      );
+              }),
+
+              SizedBox(
+                height: 36,
+              ),
 
               // Уровень стресса
-              Column(
-                children: [
-                  Text('Уровень стресса'),
-                  Text('Тут должны быть метки'),
-                  SliderTheme(
-                    data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: theme.primaryColor,
-                      activeTickMarkColor: theme.primaryColor,
-                      inactiveTrackColor: theme.primaryColor.withAlpha(10),
-                      inactiveTickMarkColor: theme.primaryColor.withAlpha(10),
-                      trackHeight: 10,
-                      thumbColor: theme.primaryColor,
-                      overlayColor: theme.primaryColor.withAlpha(100),
-                      thumbShape:
-                      RoundSliderThumbShape(enabledThumbRadius: 12.0),
-                      overlayShape:
-                      RoundSliderOverlayShape(overlayRadius: 20.0),
-                      tickMarkShape: RoundSliderTickMarkShape(),
-                      valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-                      valueIndicatorColor: theme.primaryColor,
-                      valueIndicatorTextStyle: TextStyle(color: Colors.white),
-                      trackShape: RoundedRectSliderTrackShape(),
-                    ),
-                    child: Slider(
-                      value: _stressLevel,
-                      min: 0,
-                      max: 10,
-                      divisions: 10,
-                      label: _stressLevel.toString(),
-                      onChanged: (value) {
-                        setState(
-                              () {
-                            _stressLevel = value;
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Низкий', style: TextStyle(fontSize: 16)),
-                      Text('Высокий', style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                ],
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Уровень стресса',
+                    style: theme.textTheme.bodyLarge,
+                  )),
+              SizedBox(
+                height: 20,
+              ),
+              CustomSlider(
+                value: _stressLevel,
+                min: 0,
+                max: 10,
+                divisions: 10,
+                minTitle: 'Низкий',
+                maxTitle: 'Высокий',
+                onChanged: (value) {
+                  setState(() {
+                    _stressLevel = value;
+                  });
+                },
               ),
 
+              SizedBox(
+                height: 36,
+              ),
               // Самооценка
-              Column(
-                children: [
-                  Text('Самооценка'),
-                  Text('Тут должны быть метки'),
-                  SliderTheme(
-                    data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: theme.primaryColor,
-                      activeTickMarkColor: theme.primaryColor,
-                      inactiveTrackColor: theme.primaryColor.withAlpha(10),
-                      inactiveTickMarkColor: theme.primaryColor.withAlpha(10),
-                      trackHeight: 10,
-                      thumbColor: theme.primaryColor,
-                      overlayColor: theme.primaryColor.withAlpha(100),
-                      thumbShape:
-                      RoundSliderThumbShape(enabledThumbRadius: 12.0),
-                      overlayShape:
-                      RoundSliderOverlayShape(overlayRadius: 20.0),
-                      tickMarkShape: RoundSliderTickMarkShape(),
-                      valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-                      valueIndicatorColor: theme.primaryColor,
-                      valueIndicatorTextStyle: TextStyle(color: Colors.white),
-                      trackShape: RoundedRectSliderTrackShape(),
-                    ),
-                    child: Slider(
-                      value: _stressLevel,
-                      min: 0,
-                      max: 10,
-                      divisions: 10,
-                      label: _stressLevel.toString(),
-                      onChanged: (value) {
-                        setState(
-                              () {
-                            _stressLevel = value;
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Неуверенность', style: TextStyle(fontSize: 16)),
-                      Text('Уверенность', style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                ],
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Самооценка',
+                    style: theme.textTheme.bodyLarge,
+                  )),
+              SizedBox(
+                height: 20,
+              ),
+              CustomSlider(
+                value: _selfAssessment,
+                min: 0,
+                max: 10,
+                divisions: 10,
+                minTitle: 'Неуверенность',
+                maxTitle: 'Увереннность',
+                onChanged: (newValue) {
+                  setState(() {
+                    _selfAssessment = newValue;
+                  });
+                },
               ),
 
+              SizedBox(
+                height: 36,
+              ),
               // Заметки
               Container(
                 decoration: BoxDecoration(
