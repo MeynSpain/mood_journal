@@ -86,7 +86,48 @@ class _MainPageState extends State<MainPage> {
         ),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.date_range_rounded)),
+          IconButton(
+              onPressed: () async {
+                // DateTime? date = await showDatePicker(
+                //     context: context,
+                //     firstDate: DateTime(2000),
+                //     lastDate: DateTime(3000));
+                DateTimeRange? dateTimeRage = await showDateRangePicker(
+                    context: context,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(3000),
+                    builder: (context, child) {
+                      return Theme(
+                        data: Theme.of(context).copyWith(
+                          datePickerTheme: DatePickerThemeData(
+                            headerBackgroundColor: Colors.white,
+                            headerForegroundColor: Colors.black,
+                            rangeSelectionBackgroundColor:
+                                theme.primaryColor.withAlpha(100),
+                            rangePickerBackgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                          ),
+                          colorScheme: ColorScheme.light(
+                            primary: theme.primaryColor,
+                            // Основной цвет (заголовок, выделенные дни)
+                            onPrimary: Colors.white,
+                            // Цвет текста на основном цвете
+                            surface: Colors.white,
+                            // Фон календаря
+                            onSurface: Colors.black,
+                          ),
+                          textButtonTheme: TextButtonThemeData(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.black,
+                            ),
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    });
+              },
+              icon: Icon(Icons.date_range_rounded)),
         ],
       ),
       body: Padding(
