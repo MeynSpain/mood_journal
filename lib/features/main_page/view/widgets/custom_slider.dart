@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mood_journal/features/main_page/view/widgets/custom_track_shape.dart';
 
 class CustomSlider extends StatefulWidget {
   final double value;
@@ -35,7 +36,23 @@ class _CustomSliderState extends State<CustomSlider> {
       padding: EdgeInsets.only(left: 10, right: 8, bottom: 16),
       child: Column(
         children: [
-          Text('Тут должны быть метки'),
+          // Text('Тут должны быть метки'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children:
+                List.generate((widget.divisions / 2 + 1).toInt(), (index) {
+              return Container(
+                height: 8,
+                child: VerticalDivider(
+                  color: index <= (widget.value / 2).toInt()
+                      ? theme.primaryColor
+                      : Color(0xFFE1DDD8),
+                  width: 2,
+                  thickness: 2,
+                ),
+              );
+            }),
+          ),
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: theme.primaryColor,
@@ -51,7 +68,8 @@ class _CustomSliderState extends State<CustomSlider> {
               valueIndicatorShape: PaddleSliderValueIndicatorShape(),
               valueIndicatorColor: theme.primaryColor,
               valueIndicatorTextStyle: TextStyle(color: Colors.white),
-              trackShape: RoundedRectSliderTrackShape(),
+              // trackShape: RoundedRectSliderTrackShape(),
+              trackShape: CustomTrackShape(),
             ),
             child: Slider(
               value: widget.value,
@@ -67,12 +85,15 @@ class _CustomSliderState extends State<CustomSlider> {
             children: [
               Text(widget.minTitle,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Color(0xFFBCBCBF),
+                    color: widget.value < 5
+                        ? theme.primaryColor
+                        : Color(0xFFBCBCBF),
                   )),
               Text(
                 widget.maxTitle,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Color(0xFFBCBCBF),
+                  color:
+                      widget.value > 5 ? theme.primaryColor : Color(0xFFBCBCBF),
                 ),
               ),
             ],
