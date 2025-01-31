@@ -4,6 +4,7 @@ import 'package:mood_journal/core/constants/prefs_names.dart';
 import 'package:mood_journal/core/repository/mood_journal_repository.dart';
 import 'package:mood_journal/features/main_page/feelings/bloc/feelings_bloc.dart';
 import 'package:mood_journal/features/main_page/save_data_bloc/save_data_bloc.dart';
+import 'package:mood_journal/features/main_page/stats/bloc/stats_bloc.dart';
 import 'package:mood_journal/features/main_page/tags/bloc/tags_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger.dart';
@@ -54,4 +55,8 @@ Future<void> init() async {
 
   // SaveDataBloc
   getIt.registerLazySingleton(() => SaveDataBloc());
+
+  // StatsBloc
+  getIt.registerLazySingleton(() => StatsBloc());
+
 }

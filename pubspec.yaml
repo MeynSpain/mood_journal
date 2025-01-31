@@ -44,6 +44,7 @@ dependencies:
   sqfentity_gen: ^2.5.0
   shared_preferences: ^2.4.0
   google_fonts: ^6.2.1
+  fl_chart: ^0.70.2
 
 dev_dependencies:
   flutter_test:

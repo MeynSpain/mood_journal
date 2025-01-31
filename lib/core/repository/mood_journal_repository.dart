@@ -1,5 +1,6 @@
 import 'package:mood_journal/core/injection.dart';
 import 'package:mood_journal/core/model/feeling/feeling_model.dart';
+import 'package:mood_journal/core/model/journal/journal_model.dart';
 import 'package:mood_journal/core/model/model_mood_journal.dart';
 import 'package:mood_journal/core/model/tags/tag_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -51,14 +52,14 @@ class MoodJournalRepository {
     await tag.save();
   }
 
-  Future<void> saveDataToJournal(
-      {required FeelingModel feeling,
-      required List<TagModel> tags,
-      required double stressLevel,
-      required double selfAssessment,
-      required String note,
-      required DateTime dateTime,
-      }) async {
+  Future<void> saveDataToJournal({
+    required FeelingModel feeling,
+    required List<TagModel> tags,
+    required double stressLevel,
+    required double selfAssessment,
+    required String note,
+    required DateTime dateTime,
+  }) async {
     try {
       Journal journalRecord = Journal();
 
@@ -73,9 +74,35 @@ class MoodJournalRepository {
 
       journalRecord.save();
     } catch (e, st) {
-     getIt<Talker>().handle(e, st);
-     getIt<Talker>().error('Не получилось сохранить запись в базу данных');
+      getIt<Talker>().handle(e, st);
+      getIt<Talker>().error('Не получилось сохранить запись в базу данных');
+    }
+  }
 
+  Future<List<JournalModel>> getJournalByDate(
+      DateTime startDate, DateTime endDate) async {
+    try {
+      List<Journal> journalRecords = await Journal()
+          .select()
+          .date
+          .greaterThanOrEquals(startDate)
+          .and
+          .date
+          .lessThanOrEquals(endDate)
+          .toList();
+
+      List<JournalModel> journal = [];
+
+      for (var record in journalRecords) {
+        journal.add(JournalModel.fromDB(journal: record));
+      }
+
+      return journal;
+    } catch (e, st) {
+      getIt<Talker>().handle(e, st);
+      getIt<Talker>().error('Не получилось получить данные из базы данных');
+
+      return [];
     }
 
   }

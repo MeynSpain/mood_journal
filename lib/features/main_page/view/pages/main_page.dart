@@ -1,21 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mood_journal/core/constants/const.dart';
-import 'package:mood_journal/core/constants/save_data_status.dart';
 import 'package:mood_journal/core/injection.dart';
-import 'package:mood_journal/core/model/feeling/feeling_model.dart';
-import 'package:mood_journal/core/model/tags/tag_model.dart';
 import 'package:mood_journal/core/services/date_service.dart';
-import 'package:mood_journal/features/main_page/feelings/bloc/feelings_bloc.dart';
-import 'package:mood_journal/features/main_page/feelings/view/widgets/feelings_widget.dart';
-import 'package:mood_journal/features/main_page/save_data_bloc/save_data_bloc.dart';
-import 'package:mood_journal/features/main_page/tags/bloc/tags_bloc.dart';
-import 'package:mood_journal/features/main_page/tags/view/widgets/tags_widget.dart';
+import 'package:mood_journal/features/main_page/stats/bloc/stats_bloc.dart';
+import 'package:mood_journal/features/main_page/stats/view/pages/stats_page.dart';
 import 'package:mood_journal/features/main_page/view/pages/journal_page.dart';
-import 'package:mood_journal/features/main_page/view/pages/stats_page.dart';
-import 'package:mood_journal/features/main_page/view/widgets/custom_slider.dart';
-import 'package:mood_journal/features/main_page/view/widgets/notes_text_field.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -32,12 +21,14 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       _selectedPageIndex = index;
     });
+    _getJournal();
   }
 
   void _openPage(int index) {
     setState(() {
       _selectedPageIndex = index;
     });
+    _getJournal();
 
     _pageController.animateToPage(
       index,
@@ -215,5 +206,12 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
     );
+  }
+
+  void _getJournal() {
+    DateTime end = DateTime.now();
+    DateTime start = DateTime(end.year, end.month, end.day);
+    getIt<StatsBloc>()
+        .add(StatsGetJournalsEvent(startDate: start, endDate: end));
   }
 }
