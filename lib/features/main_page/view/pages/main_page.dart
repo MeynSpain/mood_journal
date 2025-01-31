@@ -210,7 +210,8 @@ class _MainPageState extends State<MainPage> {
 
   void _getJournal() {
     DateTime end = DateTime.now();
-    DateTime start = DateTime(end.year, end.month, end.day);
+    // DateTime start = DateTime(end.year, end.month, end.day);
+    DateTime start = end.subtract(Duration(hours: 12));
     getIt<StatsBloc>()
         .add(StatsGetJournalsEvent(startDate: start, endDate: end));
   }
